@@ -1,16 +1,18 @@
 "use strict";
 // Les éléments DOM
 const container = document.getElementById('container');
+// Constante
+const MAX_FAIL = 6;
 // Variable
 let mysteryWord;
 let letterWord;
-let nbLife;
+let nbFail;
 //TODO Affiche le dessin
 // Méthodes
 async function initialisation() {
     mysteryWord = await getRandomWord();
     letterWord = getLettersOfMystery();
-    nbLife = 6;
+    nbFail = 0;
     generateMystery(mysteryWord);
     generateKeyboard();
 }
@@ -67,8 +69,8 @@ function handleKeyboardClick(event) {
         }
     }
     else {
-        nbLife--;
-        if (nbLife === 0) {
+        nbFail++;
+        if (nbFail >= MAX_FAIL) {
             displayLose();
         }
     }

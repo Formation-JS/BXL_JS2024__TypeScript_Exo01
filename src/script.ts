@@ -7,10 +7,13 @@ type TrouveMot = {
     categorie: string
 } 
 
+// Constante
+const MAX_FAIL = 6;
+
 // Variable
 let mysteryWord : string;
 let letterWord : string[];
-let nbLife : number;
+let nbFail : number;
 
 //TODO Affiche le dessin
 
@@ -18,7 +21,7 @@ let nbLife : number;
 async function initialisation() : Promise<void> {
     mysteryWord = await getRandomWord();
     letterWord = getLettersOfMystery();
-    nbLife = 6;
+    nbFail = 0;
 
     generateMystery(mysteryWord);
     generateKeyboard();
@@ -92,9 +95,9 @@ function handleKeyboardClick(event: Event) : void {
         }
     }
     else {
-        nbLife--;
+        nbFail++;
 
-        if(nbLife === 0) {
+        if(nbFail >= MAX_FAIL) {
             displayLose();
         }
     }

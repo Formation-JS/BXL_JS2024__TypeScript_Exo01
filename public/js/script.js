@@ -16,8 +16,9 @@ async function initialisation() {
 }
 initialisation();
 async function getRandomWord() {
-    //TODO Consommer une WebAPI pour obtenir un mot aleatoire
-    return 'Éléphant';
+    const response = await fetch('https://trouve-mot.fr/api/sizemin/7');
+    const result = await response.json();
+    return result[0].name;
 }
 ;
 function getLettersOfMystery() {

@@ -1,6 +1,12 @@
 // Les éléments DOM
 const container = document.getElementById('container') as HTMLDivElement;
 
+// Le typage
+type TrouveMot = {
+    name: string,
+    categorie: string
+} 
+
 // Variable
 let mysteryWord : string;
 let letterWord : string[];
@@ -20,8 +26,9 @@ async function initialisation() : Promise<void> {
 initialisation();
 
 async function getRandomWord() : Promise<string> {
-    //TODO Consommer une WebAPI pour obtenir un mot aleatoire
-    return 'Éléphant';
+    const response = await fetch('https://trouve-mot.fr/api/sizemin/7');
+    const result : [TrouveMot] = await response.json();
+    return result[0].name;
 };
 
 function getLettersOfMystery() : string[] {

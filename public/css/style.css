@@ -1,0 +1,14 @@
+#mystery-text {
+    display: flex;
+    gap: 0.7ch;
+
+    span {
+        min-width: 1ch;
+    }
+}
+
+#keyboard {
+    display: grid;
+    grid-template-columns: repeat(7, 4ch);
+    gap: 0.5ch;
+}

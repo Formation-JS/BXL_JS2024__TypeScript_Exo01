@@ -43,7 +43,6 @@ function generateKeyboard() {
     const letterStart = 'A'.charCodeAt(0);
     const letterEnd = 'Z'.charCodeAt(0);
     for (let code = letterStart; code <= letterEnd; code++) {
-        // console.log(code, String.fromCharCode(code));
         const letter = String.fromCharCode(code);
         const buttonLetter = document.createElement('button');
         buttonLetter.textContent = letter;
@@ -77,10 +76,8 @@ function handleKeyboardClick(event) {
 }
 function revealLetter(letter) {
     const mysteryText = document.getElementById('mystery-text');
-    console.log(mysteryText.children);
     Array.from(getWordForCompare()).forEach((wordLetter, index) => {
         if (wordLetter === letter) {
-            // console.log(wordLetter, index);
             mysteryText.children[index].textContent = mysteryWord[index];
         }
     });

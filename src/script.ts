@@ -23,8 +23,10 @@ async function initialisation() : Promise<void> {
     letterWord = getLettersOfMystery();
     nbFail = 0;
 
-    generateMystery(mysteryWord);
-    generateKeyboard();
+    const mw = generateMystery(mysteryWord);
+    const k1 = generateKeyboard();
+
+    container.append(mw, k1)
 }
 initialisation();
 
@@ -39,7 +41,7 @@ function getLettersOfMystery() : string[] {
     return [...result];
 }
 
-function generateMystery(word : string) : void {
+function generateMystery(word : string) : HTMLElement {
     const baliseText = document.createElement('p');
     baliseText.id = "mystery-text"
     
@@ -50,10 +52,10 @@ function generateMystery(word : string) : void {
         baliseText.append(baliseLetter);
     }
 
-    container.append(baliseText);
+    return baliseText;
 }
 
-function generateKeyboard() : void {
+function generateKeyboard() : HTMLElement {
     const keyboard = document.createElement('div');
     keyboard.id= "keyboard";
 
@@ -70,7 +72,7 @@ function generateKeyboard() : void {
         keyboard.append(buttonLetter);
     }
 
-    container.append(keyboard)
+    return keyboard;
 }
 
 function getWordForCompare() : string {

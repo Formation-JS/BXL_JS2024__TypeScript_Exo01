@@ -13,8 +13,9 @@ async function initialisation() {
     mysteryWord = await getRandomWord();
     letterWord = getLettersOfMystery();
     nbFail = 0;
-    generateMystery(mysteryWord);
-    generateKeyboard();
+    const mw = generateMystery(mysteryWord);
+    const k1 = generateKeyboard();
+    container.append(mw, k1);
 }
 initialisation();
 async function getRandomWord() {
@@ -35,7 +36,7 @@ function generateMystery(word) {
         baliseLetter.textContent = (letter !== ' ') ? '_' : letter;
         baliseText.append(baliseLetter);
     }
-    container.append(baliseText);
+    return baliseText;
 }
 function generateKeyboard() {
     const keyboard = document.createElement('div');
@@ -49,7 +50,7 @@ function generateKeyboard() {
         buttonLetter.addEventListener('click', handleKeyboardClick);
         keyboard.append(buttonLetter);
     }
-    container.append(keyboard);
+    return keyboard;
 }
 function getWordForCompare() {
     return mysteryWord.toUpperCase() // Majuscule

@@ -7,11 +7,13 @@ const MAX_FAIL = 6;
 let mysteryWord;
 let letterWord;
 let nbFail;
+let gameover;
 // Méthodes
 async function initialisation() {
     mysteryWord = await getRandomWord();
     letterWord = getLettersOfMystery();
     nbFail = 0;
+    gameover = false;
     const mw = generateMystery(mysteryWord);
     const k1 = generateKeyboard();
     const img = generateGameImage();
@@ -65,6 +67,9 @@ function getWordForCompare() {
         .replace(/\p{Diacritic}/gu, ""); // Supprime les "Diacritique"
 }
 function handleKeyboardClick(event) {
+    if (gameover) {
+        return;
+    }
     const button = event.target;
     button.disabled = true;
     const letter = button.textContent ?? '';
@@ -73,6 +78,7 @@ function handleKeyboardClick(event) {
         letterWord = letterWord.filter(l => l !== letter);
         if (letterWord.length === 0) {
             displayWin();
+            gameover = true;
         }
     }
     else {
@@ -80,13 +86,14 @@ function handleKeyboardClick(event) {
         refreshGameImage(nbFail);
         if (nbFail >= MAX_FAIL) {
             displayLose();
+            gameover = true;
         }
     }
 }
 function revealLetter(letter) {
     const mysteryText = document.getElementById('mystery-text');
     Array.from(getWordForCompare()).forEach((wordLetter, index) => {
-        if (wordLetter === letter) {
+        if (!letter || wordLetter === letter) {
             mysteryText.children[index].textContent = mysteryWord[index];
         }
     });
@@ -97,9 +104,18 @@ function refreshGameImage(step) {
     baliseImg.src = `./images/pendu-${step.toLocaleString('fr', { minimumIntegerDigits: 2 })}.png`;
     baliseImg.alt = `Image avec ${step} erreur${step > 1 ? 's' : ''} !`;
 }
+function refreshGameImageGameOver(win) {
+    const baliseImg = document.getElementById('image-pendu');
+    // Syntaxe ternaire : (condition) ? Val_Vrai : Val_Faux;
+    const imageName = (win) ? 'pendu-win' : 'pendu-lose';
+    const altText = (win) ? 'Gagné' : 'Perdu';
+    baliseImg.src = `./images/${imageName}.png`;
+    baliseImg.alt = `Image de fin de jeu - ${altText}`;
+}
 function displayWin() {
-    alert('Bravo');
+    refreshGameImageGameOver(true);
 }
 function displayLose() {
-    alert('Perdu');
+    revealLetter();
+    refreshGameImageGameOver(false);
 }

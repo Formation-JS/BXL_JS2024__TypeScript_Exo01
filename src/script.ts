@@ -14,12 +14,14 @@ const MAX_FAIL = 6;
 let mysteryWord : string;
 let letterWord : string[];
 let nbFail : number;
+let gameover: boolean;
 
 // Méthodes
 async function initialisation() : Promise<void> {
     mysteryWord = await getRandomWord();
     letterWord = getLettersOfMystery();
     nbFail = 0;
+    gameover = false;
 
     const mw = generateMystery(mysteryWord);
     const k1 = generateKeyboard();
@@ -90,6 +92,10 @@ function getWordForCompare() : string {
 }
 
 function handleKeyboardClick(event: Event) : void {
+    if(gameover) {
+        return;
+    }
+
     const button = event.target as HTMLButtonElement; 
     button.disabled = true;
 
@@ -101,6 +107,7 @@ function handleKeyboardClick(event: Event) : void {
 
         if(letterWord.length === 0) {
             displayWin();
+            gameover = true;
         }
     }
     else {
@@ -109,15 +116,16 @@ function handleKeyboardClick(event: Event) : void {
 
         if(nbFail >= MAX_FAIL) {
             displayLose();
+            gameover = true;
         }
     }
 }
 
-function revealLetter(letter: string) : void {
+function revealLetter(letter?: string) : void {
     const mysteryText = document.getElementById('mystery-text') as HTMLDivElement;
     
     Array.from(getWordForCompare()).forEach((wordLetter, index) => {
-        if(wordLetter === letter) {
+        if(!letter || wordLetter === letter) {
             mysteryText.children[index].textContent = mysteryWord[index];
         }
     });
@@ -132,11 +140,24 @@ function refreshGameImage(step: number) : void{
     baliseImg.alt = `Image avec ${step} erreur${step > 1 ? 's' : ''} !`;
 }
 
+function refreshGameImageGameOver(win: boolean) {
+    const baliseImg = document.getElementById('image-pendu') as HTMLImageElement;
+
+    // Syntaxe ternaire : (condition) ? Val_Vrai : Val_Faux;
+    const imageName = (win) ? 'pendu-win' : 'pendu-lose';
+    const altText = (win) ? 'Gagné' : 'Perdu';
+
+    baliseImg.src = `./images/${imageName}.png`;
+    baliseImg.alt = `Image de fin de jeu - ${altText}`;
+}
 
 function displayWin() : void {
-    alert('Bravo');
+    refreshGameImageGameOver(true);
 }
 
 function displayLose() : void {
-    alert('Perdu');
+    revealLetter();
+    refreshGameImageGameOver(false);
 }
+
+

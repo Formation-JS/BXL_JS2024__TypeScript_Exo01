@@ -15,8 +15,6 @@ let mysteryWord : string;
 let letterWord : string[];
 let nbFail : number;
 
-//TODO Affiche le dessin
-
 // Méthodes
 async function initialisation() : Promise<void> {
     mysteryWord = await getRandomWord();
@@ -25,8 +23,9 @@ async function initialisation() : Promise<void> {
 
     const mw = generateMystery(mysteryWord);
     const k1 = generateKeyboard();
+    const img = generateGameImage();
 
-    container.append(mw, k1)
+    container.append(mw, k1, img);
 }
 initialisation();
 
@@ -75,6 +74,15 @@ function generateKeyboard() : HTMLElement {
     return keyboard;
 }
 
+function generateGameImage() : HTMLElement {
+    const baliseImg = document.createElement('img') as HTMLImageElement;
+    baliseImg.id = 'image-pendu';
+    baliseImg.src = './images/pendu-00.png';
+    baliseImg.alt = 'Image de debut de jeu';
+
+    return baliseImg;
+}
+
 function getWordForCompare() : string {
     return mysteryWord.toUpperCase()                    // Majuscule
                       .normalize("NFD")                 // Normalise (Caractere acentué)
@@ -97,6 +105,7 @@ function handleKeyboardClick(event: Event) : void {
     }
     else {
         nbFail++;
+        refreshGameImage(nbFail);
 
         if(nbFail >= MAX_FAIL) {
             displayLose();
@@ -104,7 +113,7 @@ function handleKeyboardClick(event: Event) : void {
     }
 }
 
-function revealLetter(letter: string) {
+function revealLetter(letter: string) : void {
     const mysteryText = document.getElementById('mystery-text') as HTMLDivElement;
     
     Array.from(getWordForCompare()).forEach((wordLetter, index) => {
@@ -113,6 +122,16 @@ function revealLetter(letter: string) {
         }
     });
 }
+
+function refreshGameImage(step: number) : void{
+    const baliseImg = document.getElementById('image-pendu') as HTMLImageElement;
+
+    // baliseImg.src = `./images/pendu-${step.toString().padStart(2, '0')}.png`;
+    baliseImg.src = `./images/pendu-${step.toLocaleString('fr', { minimumIntegerDigits : 2 })}.png`;
+
+    baliseImg.alt = `Image avec ${step} erreur${step > 1 ? 's' : ''} !`;
+}
+
 
 function displayWin() : void {
     alert('Bravo');

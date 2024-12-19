@@ -7,7 +7,6 @@ const MAX_FAIL = 6;
 let mysteryWord;
 let letterWord;
 let nbFail;
-//TODO Affiche le dessin
 // Méthodes
 async function initialisation() {
     mysteryWord = await getRandomWord();
@@ -15,7 +14,8 @@ async function initialisation() {
     nbFail = 0;
     const mw = generateMystery(mysteryWord);
     const k1 = generateKeyboard();
-    container.append(mw, k1);
+    const img = generateGameImage();
+    container.append(mw, k1, img);
 }
 initialisation();
 async function getRandomWord() {
@@ -52,6 +52,13 @@ function generateKeyboard() {
     }
     return keyboard;
 }
+function generateGameImage() {
+    const baliseImg = document.createElement('img');
+    baliseImg.id = 'image-pendu';
+    baliseImg.src = './images/pendu-00.png';
+    baliseImg.alt = 'Image de debut de jeu';
+    return baliseImg;
+}
 function getWordForCompare() {
     return mysteryWord.toUpperCase() // Majuscule
         .normalize("NFD") // Normalise (Caractere acentué)
@@ -70,6 +77,7 @@ function handleKeyboardClick(event) {
     }
     else {
         nbFail++;
+        refreshGameImage(nbFail);
         if (nbFail >= MAX_FAIL) {
             displayLose();
         }
@@ -82,6 +90,12 @@ function revealLetter(letter) {
             mysteryText.children[index].textContent = mysteryWord[index];
         }
     });
+}
+function refreshGameImage(step) {
+    const baliseImg = document.getElementById('image-pendu');
+    // baliseImg.src = `./images/pendu-${step.toString().padStart(2, '0')}.png`;
+    baliseImg.src = `./images/pendu-${step.toLocaleString('fr', { minimumIntegerDigits: 2 })}.png`;
+    baliseImg.alt = `Image avec ${step} erreur${step > 1 ? 's' : ''} !`;
 }
 function displayWin() {
     alert('Bravo');
